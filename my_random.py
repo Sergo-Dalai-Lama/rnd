@@ -1,25 +1,19 @@
 # my_random.py
 import random
 import time
-import threading
-import signal
+from flask import Flask, jsonify
 
-stop_flag = threading.Event()
+app = Flask(__name__)
 
-def generate_numbers():
-    while not stop_flag.is_set():
-        num = random.randint(1, 100)
-        with open("rnd.txt", "w") as f:
-            f.write(f"{num}\n")
-        time.sleep(10)
+def generate_number():
+    return random.randint(1, 100)
 
-def handle_signal(signum, frame):
-    stop_flag.set()
+@app.route('/api/random', methods=['GET'])
+def get_random():
+    number = generate_number()
+    with open("rnd.txt", "w") as f:
+        f.write(f"{number}")
+    return jsonify({"number": number})
 
 if __name__ == "__main__":
-    # Регистрируем обработчик сигнала
-    signal.signal(signal.SIGTERM, handle_signal)
-    
-    generator_thread = threading.Thread(target=generate_numbers)
-    generator_thread.start()
-    generator_thread.join()
+    app.run(host='0.0.0.0', port=5000)
