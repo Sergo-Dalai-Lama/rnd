@@ -5,6 +5,11 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+if __name__ == "__main__":
+    print("⚡ Запуск сервера...")  # Это должно появиться в консоли
+    app.run(host='0.0.0.0', port=5000, debug=True)
+    print("🚀 Сервер работает")  # Если это не видно - app.run() не сработал
+
 def generate_number():
     return random.randint(1, 100)
 
